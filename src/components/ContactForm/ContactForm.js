@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import css from './ContactForm.module.css';
@@ -10,14 +10,15 @@ export default class ContactForm extends Component {
   };
 
   handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   };
 
   createContact = e => {
     e.preventDefault();
     const { name, number } = this.state;
     const { contacts, addContact } = this.props;
-  
+
     if (!contacts.find(contact => contact.name === name.trim())) {
       const newContact = {
         name: name.trim(),
@@ -33,13 +34,13 @@ export default class ContactForm extends Component {
       alert(`${name} is already in contacts`);
     }
   };
-  
 
   render() {
+    const { name, number } = this.state;
+
     return (
       <form className={css.form} onSubmit={this.createContact}>
         <label className={css.label} htmlFor="name">
-          {' '}
           Name
           <input
             className={css.input}
@@ -47,13 +48,12 @@ export default class ContactForm extends Component {
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            value={this.state.name}
+            value={name}
             onChange={this.handleChange}
             required
           />
         </label>
         <label className={css.label} htmlFor="number">
-          {' '}
           Number
           <input
             className={css.input}
@@ -61,7 +61,7 @@ export default class ContactForm extends Component {
             name="number"
             pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            value={this.state.number}
+            value={number}
             onChange={this.handleChange}
             required
           />

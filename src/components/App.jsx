@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
+import './App.css';
 
-export function App() {
-  const [contacts, setContacts] = useState( () => {
+function App() {
+  const [contacts, setContacts] = useState(() => {
     const storedContacts = localStorage.getItem('contacts');
-    return storedContacts ? JSON.parse(storedContacts) : [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ];
+    return storedContacts ? JSON.parse(storedContacts) : [];
   });
 
   const [filter, setFilter] = useState('');
@@ -20,15 +16,15 @@ export function App() {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const handleChange = e => {
+  const handleFilterChange = e => {
     setFilter(e.target.value);
   };
 
-  const addContact = newContact => {
+  const handleAddContact = newContact => {
     setContacts(prevContacts => [newContact, ...prevContacts]);
   };
 
-  const searchContact = () => {
+  const searchContacts = () => {
     const normalizedFilter = filter.toLowerCase().trim();
     return contacts.filter(contact => {
       return `${contact.name}${contact.number}`
@@ -37,34 +33,26 @@ export function App() {
     });
   };
 
-  const deleteContact = id => {
+  const handleDeleteContact = id => {
     setContacts(prevContacts =>
       prevContacts.filter(contact => contact.id !== id)
     );
   };
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 20,
-        color: '#010101',
-      }}
-    >
+    <div className="app_container">
       <h1>Phonebook</h1>
       <ContactForm
         contacts={contacts}
-        addContact={addContact}
-        handleChange={handleChange}
+        addContact={handleAddContact}
+        handleChange={handleFilterChange}
       />
 
       <h2>Contacts</h2>
-      <Filter value={filter} onChange={handleChange} />
-      <ContactList contacts={searchContact()} deleteContact={deleteContact} />
+      <Filter value={filter} onChange={handleFilterChange} />
+      <ContactList contacts={searchContacts()} deleteContact={handleDeleteContact} />
     </div>
   );
 }
+
+export default App;
